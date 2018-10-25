@@ -34,7 +34,7 @@ class localSearch():
                 count += 1
 
             # Out of loop if we dont have better result
-            if count > 1000 or (time.time() - start) > (60 * 5):
+            if count > 3000 or (time.time() - start) > (60 * 5):
             # if (time.time() - start) > 30:
                 break
 
@@ -46,7 +46,7 @@ class localSearch():
             else:
                 path += minSolution[i].idx + ' -> '
         
-        print(path)
+        # print(path)
         distance = self.distancePath(minSolution)
         print(f'Distance of route 2: {distance}')
         # print('Time: ' + str(time.time() - self.time) + ' sec.')
