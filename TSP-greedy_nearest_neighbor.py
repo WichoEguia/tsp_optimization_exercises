@@ -70,6 +70,10 @@ class NearestNeighbor():
         self.tour.append(self.tour[0])
         return self.tour
 
+    """
+    description: Calculate the distance in a array of nodes
+    return: integer, distance
+    """
     def distanceTour(self, path=None):
         distance = 0
 
@@ -83,6 +87,10 @@ class NearestNeighbor():
 
         return distance
 
+    """
+    description: Maxe a string with all nodes on the route
+    return: String tour
+    """
     def resultPath(self, path=None):
         result_path = ''
 
