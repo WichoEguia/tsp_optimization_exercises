@@ -1,6 +1,6 @@
 from Node import Node
 from Timer import Timer
-from random import randint as rand
+import random
 import time
 
 class localSearch():
@@ -10,11 +10,12 @@ class localSearch():
     def firstIncome(self):
         count = 0
         start = time.time()
+        random.seed(2000)
         
         while True:
-            index_i = rand(2, len(self.improved_solution) - 2)
+            index_i = random.randint(2, len(self.improved_solution) - 2)
             while True:
-                index_j = rand(2, len(self.improved_solution) - 2)
+                index_j = random.randint(2, len(self.improved_solution) - 2)
                 if index_j != index_i:
                     break
 
@@ -27,7 +28,7 @@ class localSearch():
                 count += 1
 
             # if (time.time() - start) > 30:
-            if count > 3000 or (time.time() - start) > (60 * 5):
+            if count > 1500 or (time.time() - start) > 30:
                 break
 
         return self.improved_solution

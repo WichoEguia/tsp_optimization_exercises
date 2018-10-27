@@ -6,6 +6,8 @@ from Node import Node
 from TspPath import Path
 from sys import argv
 from Timer import Timer
+import random
+from operator import itemgetter
 from localSearch_firstIncome import localSearch
 
 class NearestNeighbor():
@@ -51,24 +53,57 @@ class NearestNeighbor():
     def run(self):
         current = self.nodes[0]
 
-        while len(self.tour) != len(self.nodes):
+        while len(self.nodes) != len(self.tour):
             self.tour.append(current)
-            min_distance = 10000000
-            aux_current = current
+            arr_nodes = []
 
-            for i in range(len(self.nodes)):
-                if self.nodes[i] not in self.tour:
-                    distance = aux_current.distance(self.nodes[i])
+            for node in self.nodes:
+                if node not in self.tour:
+                    distance = current.distance(node)
 
-                    if distance < min_distance:
-                        min_distance = distance
-                        current = self.nodes[i]
+                    arr_nodes.append({
+                        'distance': distance,
+                        'node': node
+                    })
 
-                else:
-                    continue
+            if len(arr_nodes) > 0:
+                current = self.getKmeanNode(arr_nodes)
+                # break
+            else:
+                break
 
         self.tour.append(self.tour[0])
         return self.tour
+
+    """
+    description: select randomly a node
+    return: selected node
+    """
+    def getKmeanNode(self, arr_opts):
+        arr_opts = sorted(arr_opts, key=itemgetter('distance'))
+        # print(arr_opts)
+        kmeans = int(argv[3])
+        arr_kmeans = []
+        counter = 0
+
+        for i in range(0, len(arr_opts)):
+            if counter < kmeans:
+                # print(str(i) + ' < ' + str(kmeans))
+                arr_kmeans.append(arr_opts[i])
+                counter += 1
+        
+
+        # random.seed(2000)
+        index_rdm = random.randint(0, len(arr_kmeans) - 1)
+        # print(f'index: {index_rdm}')
+        # print(arr_kmeans)
+        selected = arr_kmeans[index_rdm]
+
+        # print(f'distance: {selected["distance"]}')
+        # print(f'node: {selected["node"]}')
+        # print('-----------------------------')
+
+        return selected['node']
 
     """
     description: Calculate the distance in a array of nodes
@@ -112,18 +147,29 @@ def main():
         argv[2] = 1
 
     for i in range(0, int(argv[2])):
-        nearst_neighbor = NearestNeighbor()
-        tour = nearst_neighbor.run()
+        print(f'iteration: {i}')
+        nearest_neighbor = NearestNeighbor()
+        tour = nearest_neighbor.run()
+
+        # print(nearest_neighbor.resultPath(tour))
+        print(f'Nearest Neighbor: {nearest_neighbor.distanceTour(tour)}')
 
         local_search = localSearch(tour)
         neighbor_tour = local_search.firstIncome()
+
+        print(f'LS: {nearest_neighbor.distanceTour(neighbor_tour)}')
+        print('******************************************')
 
         distance = local_search.distanceTour(neighbor_tour)
         if distance < min_distance:
             min_distance = distance
             min_tour = local_search.resultPath(neighbor_tour)
         
+    # nearset_neighbor = NearestNeighbor()
+    # min_tour = nearset_neighbor.resultPath(nearset_neighbor.run())
+    # min_distance = nearset_neighbor.distanceTour(nearset_neighbor.run())
 
+    print('----- Final Result -----')
     print(min_tour)
     print(min_distance)
 
