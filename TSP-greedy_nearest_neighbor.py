@@ -141,13 +141,16 @@ class NearestNeighbor():
         return result_path
 
 def main():
+    timer = Timer()
+    timer.start()
+
     min_distance = 10000000000
     
     if int(argv[2]) == 0:
         argv[2] = 1
 
     for i in range(0, int(argv[2])):
-        print(f'iteration: {i}')
+        print(f'iteration: {i + 1}')
         nearest_neighbor = NearestNeighbor()
         tour = nearest_neighbor.run()
 
@@ -169,9 +172,10 @@ def main():
     # min_tour = nearset_neighbor.resultPath(nearset_neighbor.run())
     # min_distance = nearset_neighbor.distanceTour(nearset_neighbor.run())
 
-    print('----- Final Result -----')
-    print(min_tour)
-    print(min_distance)
+    print('----- Final Result -----\n')
+    print(f'Minimum tour: {min_tour}')
+    print(f'Minimum distance: {min_distance}')
+    print(timer.elapsed('Time of execution: ') + ' seconds')
 
 if __name__ == '__main__':
     main()
