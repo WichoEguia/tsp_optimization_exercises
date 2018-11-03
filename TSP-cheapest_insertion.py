@@ -1,5 +1,5 @@
 from Node import Node
-from TspPath import Path
+
 from sys import argv
 import operator
 from Timer import Timer

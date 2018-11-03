@@ -28,23 +28,10 @@ class localSearch():
                 count += 1
 
             # if (time.time() - start) > 30:
-            if count > 1500 or (time.time() - start) > 30:
+            if count > 5000 or (time.time() - start) > 120:
                 break
 
         return self.improved_solution
-
-        # Print the path
-        # path = '2nd path: '
-        # for i in range(0, len(minSolution)):
-        #     if i == len(minSolution) - 1:
-        #         path += minSolution[i].idx
-        #     else:
-        #         path += minSolution[i].idx + ' -> '
-        
-        # print(path)
-        # distance = self.distancePath(minSolution)
-        # print(f'Distance of route 2: {distance}')
-        # print('Time: ' + str(time.time() - self.time) + ' sec.')
 
     def distanceTour(self, path=None):
         distance = 0

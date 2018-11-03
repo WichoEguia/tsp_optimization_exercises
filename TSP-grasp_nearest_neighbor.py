@@ -3,7 +3,7 @@ Command: py TSP-greedy_nearest_neighbor.py file iterations kmeans
 """
 
 from Node import Node
-from TspPath import Path
+
 from sys import argv
 from Timer import Timer
 import random
@@ -67,7 +67,8 @@ class NearestNeighbor():
                     })
 
             if len(arr_nodes) > 0:
-                current = self.getKmeanNode(arr_nodes)
+                current = self.getKbestNode(arr_nodes)
+                # current = self.getRCLNode(arr_nodes)
                 # break
             else:
                 break
@@ -79,31 +80,34 @@ class NearestNeighbor():
     description: select randomly a node
     return: selected node
     """
-    def getKmeanNode(self, arr_opts):
+    def getKbestNode(self, arr_opts):
         arr_opts = sorted(arr_opts, key=itemgetter('distance'))
         # print(arr_opts)
-        kmeans = int(argv[3])
-        arr_kmeans = []
+        kbest = int(argv[3])
+        arr_kbest = []
         counter = 0
 
         for i in range(0, len(arr_opts)):
-            if counter < kmeans:
-                # print(str(i) + ' < ' + str(kmeans))
-                arr_kmeans.append(arr_opts[i])
+            if counter < kbest:
+                # print(str(i) + ' < ' + str(kbest))
+                arr_kbest.append(arr_opts[i])
                 counter += 1
         
 
         # random.seed(2000)
-        index_rdm = random.randint(0, len(arr_kmeans) - 1)
+        index_rdm = random.randint(0, len(arr_kbest) - 1)
         # print(f'index: {index_rdm}')
-        # print(arr_kmeans)
-        selected = arr_kmeans[index_rdm]
+        # print(arr_kbest)
+        selected = arr_kbest[index_rdm]
 
         # print(f'distance: {selected["distance"]}')
         # print(f'node: {selected["node"]}')
         # print('-----------------------------')
 
         return selected['node']
+
+    # getRCLNode(self, arr_opts):
+    #     cmin = arr
 
     """
     description: Calculate the distance in a array of nodes
