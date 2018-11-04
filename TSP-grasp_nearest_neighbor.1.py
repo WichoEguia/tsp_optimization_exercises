@@ -11,29 +11,12 @@ from operator import itemgetter
 from localSearch_firstIncome import localSearch
 
 class NearestNeighbor():
-    def __init__(self):
+    def __init__(self, k=1, alpha=0, method=1):
         self.nodes = self.getNodes()
         self.tour = []
-        self.k = 1
-        self.alpha = 0
-        self.method = 1
-
-    def set_configuration_method(self):
-        c = ''
-        c += 'Method\n'
-        c += '1) K-Best\n'
-        c += '2) RCL\n'
-        c += 'method: '
-        self.method = int(input(c))
-
-        # if method != 1 or method != 2:
-        #     self.set_configuration_method()
-
-        if self.method == 1:
-            self.k = int(input('K: '))
-
-        if self.method == 2:
-            self.alpha = int(input('ALPHA: '))
+        self.k = k
+        self.alpha = alpha
+        self.method = method
 
     """
     description: Get the set of nodes from the file pased
@@ -91,6 +74,7 @@ class NearestNeighbor():
                     current = self.getKbestNode(arr_nodes)
                 elif self.method == 2:
                     current = self.getRCLNode(arr_nodes)
+
             else:
                 break
 
@@ -131,10 +115,19 @@ class NearestNeighbor():
         cmax = arr_opts[len(arr_opts)-1]['distance']
         rcl = []
 
+        # print(f'min: {cmin}')
+        # print(f'max: {cmax + self.alpha * (cmax - cmin)}')
+
         for opt in arr_opts:
             if cmin <= opt['distance'] <= cmax + self.alpha * (cmax - cmin):
-                rcl.append(opt['node'])
-        print(rcl)            
+                rcl.append(opt)
+        
+        # print('-------------------------')
+        # print(rcl)
+
+        index_rdm = random.randint(0, len(rcl) - 1)
+        selected = rcl[index_rdm]
+        return selected['node']
 
     """
     description: Calculate the distance in a array of nodes
@@ -174,17 +167,30 @@ class NearestNeighbor():
 def main():
     timer = Timer()
     timer.start()
+    k = 1
+    alpha = 0
 
     min_distance = 10000000000
     
     if int(argv[2]) == 0:
         argv[2] = 1
 
-    nearest_neighbor = NearestNeighbor()
-    nearest_neighbor.set_configuration_method()
+    c =  'Method\n'
+    c += '1) K-Best\n'
+    c += '2) RCL\n'
+    c += 'method: '
+    method = int(input(c))
+
+    if method == 1:
+        k = int(input('K: '))
+
+    if method == 2:
+        alpha = float(input('ALPHA (0 a 1): '))
 
     for i in range(0, int(argv[2])):
         print(f'iteration: {i + 1}')
+
+        nearest_neighbor = NearestNeighbor(k, alpha, method)
         tour = nearest_neighbor.run()
 
         # print(nearest_neighbor.resultPath(tour))
