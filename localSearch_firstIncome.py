@@ -28,7 +28,7 @@ class localSearch():
                 count += 1
 
             # if (time.time() - start) > 30:
-            if count > 5000 or (time.time() - start) > 120:
+            if count > 3000 or (time.time() - start) > 120:
                 break
 
         return self.improved_solution

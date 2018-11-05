@@ -1,5 +1,5 @@
 """
-Command: py TSP-greedy_nearest_neighbor.py file iterations kmeans
+Command: py TSP-grasp_nearest_neighbor.py file_path number_of_iterations
 """
 
 from Node import Node
@@ -7,6 +7,7 @@ from Node import Node
 from sys import argv
 from Timer import Timer
 import random
+import time
 from operator import itemgetter
 from localSearch_firstIncome import localSearch
 
@@ -119,18 +120,26 @@ class NearestNeighbor():
         cmax = arr_opts[len(arr_opts)-1]['distance']
         rcl = []
 
+        # print(arr_opts)
+
+        # print(f'cmin: {cmin}')
+        # print(f'cmax: {cmax}')
+
         # print(f'min: {cmin}')
         # print(f'max: {cmax + self.alpha * (cmax - cmin)}')
 
         for opt in arr_opts:
-            if cmin <= opt['distance'] <= cmax + self.alpha * (cmax - cmin):
+            if cmin <= opt['distance'] <= cmin + self.alpha * (cmax - cmin):
                 rcl.append(opt)
         
-        # print('-------------------------')
-        # print(rcl)
+        # print(f'selected: {rcl[len(rcl)-1]["distance"]}')
 
         index_rdm = random.randint(0, len(rcl) - 1)
         selected = rcl[index_rdm]
+        # print(rcl)
+        # print(index_rdm)
+        # print(selected)
+        # print('-------------------------')
         return selected['node']
 
     """
@@ -171,6 +180,7 @@ class NearestNeighbor():
 def main():
     timer = Timer()
     timer.start()
+    start = time.time()
     k = 1
     alpha = 0
 
@@ -192,7 +202,7 @@ def main():
         alpha = float(input('ALPHA (0 a 1): '))
 
     for i in range(0, int(argv[2])):
-        print(f'iteration: {i + 1}')
+        print(f'\niteration: {i + 1}')
 
         nearest_neighbor = NearestNeighbor(k, alpha, method)
         tour = nearest_neighbor.run()
@@ -210,10 +220,9 @@ def main():
         if distance < min_distance:
             min_distance = distance
             min_tour = local_search.resultPath(neighbor_tour)
-        
-    # nearset_neighbor = NearestNeighbor()
-    # min_tour = nearset_neighbor.resultPath(nearset_neighbor.run())
-    # min_distance = nearset_neighbor.distanceTour(nearset_neighbor.run())
+
+        if (time.time() - start) > (60 * 3):
+            break
 
     print('----- Final Result -----\n')
     print(f'Minimum tour: {min_tour}')
