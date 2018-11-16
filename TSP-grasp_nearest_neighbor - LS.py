@@ -9,8 +9,8 @@ from Timer import Timer
 import random
 import time
 from operator import itemgetter
-from twoOpt import TwoOpt
-from TspPath import Path
+from localSearch_firstIncome import localSearch
+# from TspPath import Path
 
 class NearestNeighbor():
     def __init__(self, k=1, alpha=0, method=1):
@@ -211,27 +211,25 @@ def main():
         # print(nearest_neighbor.resultPath(tour))
         # print(f'Nearest Neighbor: {nearest_neighbor.distanceTour(tour)}')
 
-        twoOpt = TwoOpt(tour, 127.0)
-        neighbor_tour = twoOpt.run()
+        local_search = localSearch(tour)
+        neighbor_tour = local_search.firstIncome()
 
         # print(f'LS: {nearest_neighbor.distanceTour(neighbor_tour)}')
         # Path(neighbor_tour)
         # print('******************************************')
 
-        distance = twoOpt.distanceTour(neighbor_tour)
+        distance = local_search.distanceTour(neighbor_tour)
         if distance < min_distance:
             min_distance = distance
-            min_tour_path = twoOpt.resultPath(neighbor_tour)
-            min_tour = neighbor_tour
+            min_tour = local_search.resultPath(neighbor_tour)
 
         if (time.time() - start) > (60 * 2):
             break
 
     print('----- Final Result -----\n')
-    print(f'Minimum tour: {min_tour_path}')
+    print(f'Minimum tour: {min_tour}')
     print(f'Minimum distance: {min_distance}')
     print(timer.elapsed('Time of execution: ') + ' seconds')
-    Path(min_tour)
 
 if __name__ == '__main__':
     main()
