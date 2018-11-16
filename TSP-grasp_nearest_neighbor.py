@@ -3,9 +3,7 @@ Command: py TSP-grasp_nearest_neighbor.py file_path number_of_iterations
 """
 
 from Node import Node
-
 from sys import argv
-from Timer import Timer
 import random
 import time
 from operator import itemgetter
@@ -94,20 +92,12 @@ class NearestNeighbor():
 
         for i in range(0, len(arr_opts)):
             if counter < self.k:
-                # print(str(i) + ' < ' + str(kbest))
                 arr_kbest.append(arr_opts[i])
                 counter += 1
         
 
-        # random.seed(2000)
         index_rdm = random.randint(0, len(arr_kbest) - 1)
-        # print(f'index: {index_rdm}')
-        # print(arr_kbest)
         selected = arr_kbest[index_rdm]
-
-        # print(f'distance: {selected["distance"]}')
-        # print(f'node: {selected["node"]}')
-        # print('-----------------------------')
 
         return selected['node']
 
@@ -121,26 +111,12 @@ class NearestNeighbor():
         cmax = arr_opts[len(arr_opts)-1]['distance']
         rcl = []
 
-        # print(arr_opts)
-
-        # print(f'cmin: {cmin}')
-        # print(f'cmax: {cmax}')
-
-        # print(f'min: {cmin}')
-        # print(f'max: {cmax + self.alpha * (cmax - cmin)}')
-
         for opt in arr_opts:
             if cmin <= opt['distance'] <= cmin + self.alpha * (cmax - cmin):
                 rcl.append(opt)
-        
-        # print(f'selected: {rcl[len(rcl)-1]["distance"]}')
 
         index_rdm = random.randint(0, len(rcl) - 1)
         selected = rcl[index_rdm]
-        # print(rcl)
-        # print(index_rdm)
-        # print(selected)
-        # print('-------------------------')
         return selected['node']
 
     """
@@ -179,16 +155,22 @@ class NearestNeighbor():
         return result_path
 
 def main():
-    timer = Timer()
-    timer.start()
     start = time.time()
     k = 1
     alpha = 0
-
-    min_distance = 10000000000
+    min_distance = 999999999999
     
-    if int(argv[2]) == 0:
-        argv[2] = 1
+    # Number of global iterations
+    if len(argv) >= 3:
+        globalIterations = int(argv[2])
+    else:
+        globalIterations = 1
+
+    # Get 2opt execution time (minutes)
+    if len(argv) >= 4:
+        twoOptTime = float(argv[3]) * 60 - 1
+    else:
+        twoOptTime = 179.0
 
     c =  'Method\n'
     c += '1) K-Best\n'
@@ -202,21 +184,12 @@ def main():
     if method == 2:
         alpha = float(input('ALPHA (0 a 1): '))
 
-    for i in range(0, int(argv[2])):
-        # print(f'\niteration: {i + 1}')
-
+    for i in range(0, globalIterations):
         nearest_neighbor = NearestNeighbor(k, alpha, method)
         tour = nearest_neighbor.run()
 
-        # print(nearest_neighbor.resultPath(tour))
-        # print(f'Nearest Neighbor: {nearest_neighbor.distanceTour(tour)}')
-
-        twoOpt = TwoOpt(tour, 127.0)
+        twoOpt = TwoOpt(tour, twoOptTime)
         neighbor_tour = twoOpt.run()
-
-        # print(f'LS: {nearest_neighbor.distanceTour(neighbor_tour)}')
-        # Path(neighbor_tour)
-        # print('******************************************')
 
         distance = twoOpt.distanceTour(neighbor_tour)
         if distance < min_distance:
@@ -228,9 +201,11 @@ def main():
             break
 
     print('----- Final Result -----\n')
+    end = time.time()
+    elapsed = end - start
     print(f'Minimum tour: {min_tour_path}')
     print(f'Minimum distance: {min_distance}')
-    print(timer.elapsed('Time of execution: ') + ' seconds')
+    print(f'Time of execution: {elapsed}')
     Path(min_tour)
 
 if __name__ == '__main__':
